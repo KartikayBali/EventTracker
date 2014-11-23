@@ -2,17 +2,65 @@
 //  AppDelegate.m
 //  EventTracking
 //
-//  Created by Ratnesh on 22/11/14.
+//  Created by Bali on 22/11/14.
 //  Copyright (c) 2014 Keepworks. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "HomeViewController.h"
+#import "Event.h"
+
+static AppDelegate *sharedInstance = nil;
 
 @implementation AppDelegate
+
++(AppDelegate *)sharedInstance{
+    if (!sharedInstance) {
+        sharedInstance = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    }
+    return sharedInstance;
+}
+
+- (void)initializeEventArray
+{
+    self.eventDict = [NSMutableDictionary dictionary];
+    self.eventArray = [NSMutableArray array];
+    NSArray *tempArray = @[@[@"Metallica Concert",@"Palace Grounds", @"paid entry", @"MetallicaConcert.jpg"],
+                            @[@"Saree Exhibition",@"Malleswaram Grounds", @"free entry", @"SareeExhibition.jpg"],
+                            @[@"Wine tasting event",@"Links Brewery", @"paid entry", @"WineTasting.jpg"],
+                            @[@"Startups Meet",@"Kanteerava Indoor Stadium", @"paid entry", @"StartupMeet.gif"],
+                            @[@"Summer Noon Party",@"Kumara Park", @"paid entry", @"SummerParty.jpg"],
+                            @[@"Rock and Roll nights",@"Sarjapur Road", @"paid entry", @"RockAndRoll.jpg"],
+                            @[@"Barbecue Fridays",@"Whitefield", @"paid entry", @"Barbeque.jpg"],
+                            @[@"Summer workshop",@"Indiranagar", @"free entry", @"SummerWorkshop.jpg"],
+                            @[@"Impressions & Expressions",@"MG Road", @"free entry", @"ImpressionExpression.jpg"],
+                            @[@"Italian carnival",@"Electronic City", @"free entry", @"ItalianCarnival.jpg"]];
+    
+    for (int i = 0; i < tempArray.count; i ++) {
+        NSArray *innerArray = tempArray[i];
+        Event *ob = [[Event alloc] init];
+        [ob setEventName:innerArray[0]];
+        [ob setEventPlace:innerArray[1]];
+        [ob setEntryType:innerArray[2]];
+        [ob setEventImage:innerArray[3]];
+        
+        [self.eventArray addObject:ob];
+        self.eventDict[innerArray[0]] = ob;
+    }
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [self initializeEventArray];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    HomeViewController *obj = storyboard.instantiateInitialViewController;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:obj];
+    nav.navigationBar.translucent = NO;
+    self.window.rootViewController = nav;
+        
     return YES;
 }
 							
